@@ -1,0 +1,22 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "examp project api backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PBA-2sem/ExamProject.git"
+  },
+  "author": "team-wing-it",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PBA-2sem/ExamProject/issues"
+  },
+  "homepage": "https://github.com/PBA-2sem/ExamProject#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
