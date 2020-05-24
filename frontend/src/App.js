@@ -7,6 +7,7 @@ import UserFacade from './facades/UserFacade'
 import ProductsFacade from './facades/ProductsFacade';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
+import Products from './components/Products';
 
 class App extends React.Component {
   constructor(props) {
@@ -85,9 +86,7 @@ class App extends React.Component {
     } else {
       return (
         <div>
-          <ul>
-            {this.state.products.map(p => <li key={p.productId}>{JSON.stringify(p)}</li>)}
-          </ul>
+          <Products products={this.state.products} />
           {this.state.loadingSpinner && (
             <div className='loading-spinner'>
               <CircularProgress size={60} />

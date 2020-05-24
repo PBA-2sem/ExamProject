@@ -1,5 +1,4 @@
 const Redis = require("ioredis");
-
 const redis = new Redis.Cluster([
     {
         port: 6001,
@@ -29,7 +28,7 @@ const redis = new Redis.Cluster([
     }
 ], {
     redisOptions: {
-        password: 'teamwingitisawesome',
+        password: process.env.REDIS_PASSWORD
     }
 });
 
@@ -39,31 +38,26 @@ async function connect() {
         process.exit(1);
     });
 
-    return await redis.on("connect", async (stuff) => {
-        console.log(stuff);
+    return await redis.on("connect", async () => {
         console.log("redis connected established..");
     });
 }
 
 async function getUserSession(id) {
     try {
-        console.time('start');
-        const value = redis.get(id).then(jeff => {
-            console.log('jeff', jeff)
-            console.timeEnd('start');
-            return jeff;
-        });
-
-        return value;
+        console.time('Redis get by id');
+        const value = await redis.get(id);
+        console.timeEnd('Redis get by id');
+        return JSON.parse(value);
     } catch (err) {
         console.log('ERROR: ', err)
         throw Error('An DB error happened')
     }
 }
 
-async function setUserSessionFromLogin(id) {
+async function setUserSessionFromLogin(user) {
     try {
-        const value = await redis.set(id, "my name jeff", 'ex', 1800);
+        const value = await redis.set(user.id, JSON.stringify({ user: user }), 'ex', 1800);
         return value;
     } catch (err) {
         console.log('ERROR: ', err)

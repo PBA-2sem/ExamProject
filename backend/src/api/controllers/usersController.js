@@ -17,8 +17,8 @@ async function login(username, password) {
         delete user.create_time;
         // Get session from redis
         const inRedis = await getUserSession(user.id);
-        if (!inRedis) {
-            user = { ...user, data: { stuff: inRedis } }
+        if (inRedis) {
+            user = { ...user, data: inRedis }
             return { user: user };
         } else {
             // Set new session for user without payload
