@@ -41,7 +41,7 @@ async function getUserSession(id) {
 
 async function setUserSessionFromLogin(id) {
     try {
-        const value = await redis.set(id, "", 'ex', 1800);
+        const value = await redis.set(id, {payload: ""}, 'ex', 1800);
         return value;
     } catch (err) {
         console.log('ERROR: ', err)
