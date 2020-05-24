@@ -1,9 +1,9 @@
 const Redis = require("ioredis");
 
 const redis = new Redis({
-    port: process.env.REDIS_PASS,
+    port: process.env.REDIS_PORT,
     host: process.env.REDIS_URL,
-    password: process.env.REDIS_PASS
+    password: process.env.REDIS_PASSWORD
 });
 
 async function getUserSession(id) {
