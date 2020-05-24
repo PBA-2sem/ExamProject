@@ -14,6 +14,6 @@ module.exports.isAuthorized = function (req, res, next) {
     //         }
     //     }
     // });
-     
+
     return next();
 }
