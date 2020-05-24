@@ -1,28 +1,56 @@
 // Require Neo4j
-const neo4j = require('neo4j-driver');
+const neo4j = require('neo4j-driver');  //npm install --save neo4j-driver
 
 // Create Driver
 const driver = new neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4j", "test"));  //username, password (db is default)
 
 /**
- * Returns 
+ * Get top 3 color names as array in descending order (largest to lowest)
  */
-async function getAllOrders() {
+async function getTop3Colors() {
     try {
         const session = driver.session();
-        const result = await session.run('MATCH (n) RETURN n')
+        const result = await session.run('MATCH (n)-[r:ADDED]->(m) RETURN m, count(DISTINCT r) AS num ORDER BY num DESC LIMIT 3')
         session.close()
-        return result.records;
+        return result.records.map(record => record['_fields'][0]['properties']['name']);
     } catch (err) {
         console.log('ERROR: ', err)
         throw Error('A DB error happened')
     }
 }
 
-async function createOrder(order) {
+/**
+ * CREATE given age & color nodes (if not already exist, else MERGE), and CREATE relationship between them.
+ * @param {*} age, number 
+ * @param {*} color, string
+ */
+async function registerAgeAndColor(age, color) {
+
+    let ageGroup = "other"
+
+    if (age >= 13 && age <= 20) ageGroup = "teens"
+    if (age >= 20 && age <= 30) ageGroup = "twenties"
+    if (age >= 30 && age <= 40) ageGroup = "thirties"
+    if (age >= 40 && age <= 50) ageGroup = "fourties"
+    if (age >= 50 && age <= 60) ageGroup = "fifties"
+    if (age >= 60 && age <= 70) ageGroup = "sixties"
+    if (age >= 70 && age <= 80) ageGroup = "seventies"
+    if (age >= 80 && age <= 90) ageGroup = "eighties"
+    if (age >= 90 && age <= 100) ageGroup = "nineties"
+    if (age >= 100 && age <= 200) ageGroup = "hundreds"
+
     try {
         const session = driver.session();
-        await session.run("CREATE (o:Order { name: $name, content: $content })", { name: order.name, content: order.content })
+
+        // Merge agegroup
+        await session.run("MERGE (:agegroup{name: $name})", { name: ageGroup })
+
+        //merge color
+        await session.run("MERGE (:color{name: $name})", { name: color })
+
+        //create relationship
+        await session.run("MATCH (a:agegroup),(c:color) WHERE a.name = $name AND c.name = $color CREATE (a)-[r:ADDED]->(c) RETURN type(r);", { name: ageGroup, color: color })
+
         session.close()
         return
     } catch (err) {
@@ -31,7 +59,10 @@ async function createOrder(order) {
     }
 }
 
-async function deleteAllNodesAndRelationships() {
+/**
+ * Helper method: delete ll nodes & relationships in the database
+ */
+async function _deleteAllNodesAndRelationships() {
     try {
         const session = driver.session();
         await session.run('MATCH (n) DETACH DELETE n')
@@ -45,21 +76,17 @@ async function deleteAllNodesAndRelationships() {
 
 
 // TESTING
-
-async function testMultiple() {
-
-    let testOrder = { name: "orderName", content: ["content1, content2"] }
-    await createOrder(testOrder);
-
-    console.log(await getAllOrders());
-
-    await deleteAllNodesAndRelationships();
-
+async function test() {
+    await registerAgeAndColor(32, "yellow");
+    await registerAgeAndColor(13, "red");
+    await registerAgeAndColor(43, "white");
+    console.log(await getTop3Colors());
     driver.close();
 }
 
-testMultiple();
-// module.exports = {
-//     getAllOrders,
-//     createPerson
-// }
+// test();
+
+module.exports = {
+    getTop3Colors,
+    registerAgeAndColor
+}
