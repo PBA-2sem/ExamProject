@@ -1,3 +1,4 @@
+const { connect } = require('../../dbFacades/redisFacade');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -25,5 +26,7 @@ app.use(function (err, req, res, next) {
 });
 
 if (require.main === module) {
-    app.listen(PORT, () => console.log("Server running on PORT:" + PORT));
+    connect().then(() => {
+        app.listen(PORT, () => console.log("Server running on PORT:" + PORT));
+    })
 }
