@@ -1,7 +1,5 @@
 const Redis = require("ioredis");
 
-
-
 const redis = new Redis.Cluster([
     {
         port: 6001,
@@ -19,6 +17,14 @@ const redis = new Redis.Cluster([
         password: 'teamwingitisawesome'
     },
 ]);
+
+async function connect() {
+    redis.on("error", function (err) {
+        console.log("redis connection error " + err);
+        process.exit(1);
+    });
+    return await redis.on("connect", () => { console.log("redis connected established.."); });
+}
 
 async function getUserSession(id) {
     try {
@@ -54,6 +60,7 @@ async function setUserSessionWithPayload(id, payload) {
 }
 
 module.exports = {
+    connect,
     getUserSession,
     setUserSessionFromLogin,
     setUserSessionWithPayload
