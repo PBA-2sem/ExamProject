@@ -1,10 +1,24 @@
 const Redis = require("ioredis");
 
-const redis = new Redis({
-    port: process.env.REDIS_PORT,
-    host: process.env.REDIS_URL,
-    password: process.env.REDIS_PASSWORD
-});
+
+
+const redis = new Redis.Cluster([
+    {
+        port: 6001,
+        host: "34.207.62.135",
+        password: 'teamwingitisawesome'
+      },
+      {
+        port: 6001,
+        host: "3.85.54.175",
+        password: 'teamwingitisawesome'
+      },
+      {
+        port: 6001,
+        host: "52.91.150.136",
+        password: 'teamwingitisawesome'
+      },
+    ]);
 
 async function getUserSession(id) {
     try {

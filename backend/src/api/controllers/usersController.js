@@ -11,18 +11,19 @@ async function createUser(username, password, age, country) {
 
 // TODO : handle login with storing a session in redis (if present add session data to returned object)
 async function login(username, password) {
-    const user = await getUserByUsername(username);
+    let user = await getUserByUsername(username);
     if (bcrypt.compareSync(password, user.password)) {
         delete user.password;
         delete user.create_time;
 
         // Get session from redis
         const inRedis = await getUserSession(user.id);
-        if (inRedis) {
+        if (inRedis != null) {
             user = { ...user, data: { stuff: inRedis } }
         } else {
             // Set new session for user without payload
             await setUserSessionFromLogin(user.id)
+            console.log(user.id)
             return { user: user };
         }
     } else {
