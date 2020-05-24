@@ -1,4 +1,5 @@
 const { addUser, getUserByUsername } = require('../../dbFacades/mysqlFacade');
+const { getUserSession, setUserSessionFromLogin } = require('../../dbFacades/redisFacade');
 const bcrypt = require('bcryptjs');
 
 async function createUser(username, password, age, country) {
@@ -16,10 +17,11 @@ async function login(username, password) {
         delete user.create_time;
 
         // Get session from redis
-        const inRedis = false;
+        const inRedis = await getUserSession(user.id);
         if (inRedis) {
-            user = { ...user, data: { stuff: 'from redis' } }
+            user = { ...user, data: { stuff: inRedis } }
         } else {
+            await setUserSessionFromLogin(user.id)
             return { user: user };
         }
     } else {
