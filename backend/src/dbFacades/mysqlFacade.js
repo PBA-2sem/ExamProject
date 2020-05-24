@@ -40,45 +40,41 @@ async function addUser({ username, password, age, country }) {
     }
 }
 
-async function addProduct(product) {
-
-}
-
-async function removeProduct(id) {
-
-}
-
-async function updateProduct(product) {
-
-}
-
 async function getProduct(id) {
-}
-
-async function getProducts() {
     try {
-
-        const [rows, fields] = await pool.execute('SELECT * FROM products');
+        const [rows, fields] = await pool.execute('SELECT * FROM product where productId= ?', [id]);
+        return rows;
     } catch (err) {
         console.log('ERROR: ', err)
         throw Error('An DB error happened')
     }
-    return rows;
 }
 
-async function getProductsByCategory(category) {
-
+async function getProducts() {
+    try {
+        const [rows, fields] = await pool.execute('SELECT * FROM product');
+        return rows;
+    } catch (err) {
+        console.log('ERROR: ', err)
+        throw Error('An DB error happened')
+    }
 }
 
+async function getProdByCategory(category) {
+    try {
+        const [rows, fields] = await pool.execute('SELECT * FROM product where category= ?', [category]);
+        return rows;
+    } catch (err) {
+        console.log('ERROR: ', err)
+        throw Error('An DB error happened')
+    }
 
+}
 
 module.exports = {
     getUserByUsername,
     addUser,
-    addProduct,
-    removeProduct,
-    updateProduct,
     getProduct,
     getProducts,
-    getProductsByCategory,
+    getProdByCategory,
 }

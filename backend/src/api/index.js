@@ -6,6 +6,6 @@ router.get('/ping', (req, resp) => {
 })
 
 router.use('/users', require('./routes/users'));
-// router.use('/orders', require('./routes/orders'));
+router.use('/products', require('./routes/products'));
 
 module.exports = router;
