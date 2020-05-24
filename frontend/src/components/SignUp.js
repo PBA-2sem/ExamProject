@@ -58,7 +58,7 @@ export default function SignUp(props) {
             margin="normal"
             required
             fullWidth
-            name="Age"
+            name="age"
             label="Age"
             type="number"
             id="age"
@@ -69,7 +69,7 @@ export default function SignUp(props) {
             margin="normal"
             required
             fullWidth
-            name="Country"
+            name="country"
             label="Country"
             type="text"
             id="country"
@@ -79,8 +79,10 @@ export default function SignUp(props) {
             fullWidth
             variant="contained"
             color="primary"
+            type="submit"
             className={classes.submit}
             onClick={props.handleCreateUser}
+            onSubmit={props.handleCreateUser}
           >
             Create
           </Button>

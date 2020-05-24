@@ -22,7 +22,7 @@ async function login(username, password) {
             return { user: user };
         } else {
             // Set new session for user without payload
-            await setUserSessionFromLogin(user.id)
+            await setUserSessionFromLogin(user)
             console.log(user.id)
             return { user: user };
         }

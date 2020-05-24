@@ -2,8 +2,9 @@ import './App.css';
 import React from 'react'
 import SignIn from './components/SignIn'
 import Signup from './components/SignUp'
-import Modal from './components/Modal';
+// import Modal from './components/Modal';
 import UserFacade from './facades/UserFacade'
+import ProductsFacade from './facades/ProductsFacade';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 
@@ -21,6 +22,10 @@ class App extends React.Component {
     }
   }
 
+  async componentDidMount() {
+    const res = await ProductsFacade.getAllProducts();
+    this.setState({ products: res });
+  }
   handleInputChange = (event) => {
     let type = event.target.name
     let value = event.target.value
@@ -28,11 +33,11 @@ class App extends React.Component {
   }
 
   handleLogin = async (event) => {
+    event.preventDefault();
     const { username, password } = this.state
     let credentials = { username: username, password: password }
 
     let response = await UserFacade.login(credentials)
-    console.log(response)
     if (response.error) {
       alert(response.error)
     } else {
@@ -46,15 +51,15 @@ class App extends React.Component {
   }
 
 
-  handleCreateUser = async (evt) => {
-    const { username, password } = this.state
-    let response = await UserFacade.createUser({ newUser: { username: username, password: password } })
+  handleCreateUser = async (e) => {
+    e.preventDefault();
+    const { username, password, age, country } = this.state
+    let response = await UserFacade.createUser({ username, password, age, country })
     if (response.error) alert(response.error);
     else {
       alert(response.user);
       this.setState({
-        loggedIn: true,
-        role: response.user.role,
+        loggedIn: false,
         username: "",
         password: ""
       })
@@ -80,6 +85,9 @@ class App extends React.Component {
     } else {
       return (
         <div>
+          <ul>
+            {this.state.products.map(p => <li key={p.productId}>{JSON.stringify(p)}</li>)}
+          </ul>
           {this.state.loadingSpinner && (
             <div className='loading-spinner'>
               <CircularProgress size={60} />

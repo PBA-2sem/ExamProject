@@ -7,7 +7,7 @@ const { createUser, login } = require('../controllers/usersController');
 // get user data if already logged in
 router.get('/user', auth.isAuthorized, function (req, res, next) {
     // if (!user) { return res.sendStatus(401); }
-    return res.json({ });
+    return res.json({});
 });
 
 
@@ -30,16 +30,15 @@ router.post('/login', async (req, res, next) => {
 
 // create user
 router.post('/', async (req, res, next) => {
-    console.log(req.body)
     const { username, password, age, country } = req.body;
     if (!username || !password || !age || !country) return res.status(422).json({ error: 'Data missing, fill out all form fields' });
 
     try {
         const user = await createUser(username, password, age, country);
-        return res.status(201).json(user);
+        return res.status(201).json({ user: user });
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json({ err: err.message })
+        return res.status(500).json({ error: err.message })
     }
 
 })
