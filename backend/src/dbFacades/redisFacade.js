@@ -1,7 +1,5 @@
 const Redis = require("ioredis");
 
-
-
 const redis = new Redis.Cluster([
     {
         port: 6001,
@@ -21,12 +19,11 @@ const redis = new Redis.Cluster([
 ]);
 
 async function connect() {
-    this._db.on("error", function (err) {
-        logger.error("Error " + err);
+    redis.on("error", function (err) {
+        console.log("redis connection error " + err);
         process.exit(1);
     });
-
-    return await this._db.on("connect", () => { logger.debug("redis connected"); });
+    return await redis.on("connect", () => { console.log("redis connected established.."); });
 }
 
 async function getUserSession(id) {
