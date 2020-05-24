@@ -7,22 +7,25 @@ const redis = new Redis.Cluster([
         port: 6001,
         host: "34.207.62.135",
         password: 'teamwingitisawesome'
-      },
-      {
+    },
+    {
         port: 6001,
         host: "3.85.54.175",
         password: 'teamwingitisawesome'
-      },
-      {
+    },
+    {
         port: 6001,
         host: "52.91.150.136",
         password: 'teamwingitisawesome'
-      },
-    ]);
+    },
+]);
 
 async function getUserSession(id) {
     try {
+        console.time('start');
         const value = await redis.get(id);
+        console.timeEnd('start');
+
         return value;
     } catch (err) {
         console.log('ERROR: ', err)
