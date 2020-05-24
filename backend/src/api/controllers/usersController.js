@@ -21,13 +21,13 @@ async function login(username, password) {
         if (inRedis) {
             user = { ...user, data: { stuff: inRedis } }
         } else {
+            // Set new session for user without payload
             await setUserSessionFromLogin(user.id)
             return { user: user };
         }
     } else {
         throw Error('Wrong username or password')
     }
-
 }
 
 module.exports = {
