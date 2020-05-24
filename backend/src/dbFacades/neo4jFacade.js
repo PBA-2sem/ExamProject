@@ -1,16 +1,18 @@
-// Require Neo4j
 const neo4j = require('neo4j-driver');  //npm install --save neo4j-driver
 
-// Create Driver
 const driver = new neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4j", "test"));  //username, password (db is default)
+
 
 /**
  * Get top 3 color names as array in descending order (largest to lowest)
  */
-async function getTop3Colors() {
+async function getTop3Colors(age) {
+
+    let ageGroup = _getAgeGroup(age)
+
     try {
         const session = driver.session();
-        const result = await session.run('MATCH (n)-[r:ADDED]->(m) RETURN m, count(DISTINCT r) AS num ORDER BY num DESC LIMIT 3')
+        const result = await session.run('MATCH (n)-[r:ADDED]->(m) WHERE n.name = $name RETURN m, count(DISTINCT r) AS num ORDER BY num DESC LIMIT 3;', { name: ageGroup })
         session.close()
         return result.records.map(record => record['_fields'][0]['properties']['name']);
     } catch (err) {
@@ -26,18 +28,8 @@ async function getTop3Colors() {
  */
 async function registerAgeAndColor(age, color) {
 
-    let ageGroup = "other"
+    let ageGroup = _getAgeGroup(age)
 
-    if (age >= 13 && age <= 20) ageGroup = "teens"
-    if (age >= 20 && age <= 30) ageGroup = "twenties"
-    if (age >= 30 && age <= 40) ageGroup = "thirties"
-    if (age >= 40 && age <= 50) ageGroup = "fourties"
-    if (age >= 50 && age <= 60) ageGroup = "fifties"
-    if (age >= 60 && age <= 70) ageGroup = "sixties"
-    if (age >= 70 && age <= 80) ageGroup = "seventies"
-    if (age >= 80 && age <= 90) ageGroup = "eighties"
-    if (age >= 90 && age <= 100) ageGroup = "nineties"
-    if (age >= 100 && age <= 200) ageGroup = "hundreds"
 
     try {
         const session = driver.session();
@@ -57,6 +49,28 @@ async function registerAgeAndColor(age, color) {
         console.log('ERROR: ', err)
         throw Error('A DB error happened')
     }
+}
+
+/**
+ * Helper method: return corresponding ageGroup category as string for given age in number.
+ * @param {*} age, number
+ */
+function _getAgeGroup(age) {
+
+    let ageGroup = "other"
+
+    if (age >= 13 && age <= 20) ageGroup = "teens"
+    if (age >= 20 && age <= 30) ageGroup = "twenties"
+    if (age >= 30 && age <= 40) ageGroup = "thirties"
+    if (age >= 40 && age <= 50) ageGroup = "fourties"
+    if (age >= 50 && age <= 60) ageGroup = "fifties"
+    if (age >= 60 && age <= 70) ageGroup = "sixties"
+    if (age >= 70 && age <= 80) ageGroup = "seventies"
+    if (age >= 80 && age <= 90) ageGroup = "eighties"
+    if (age >= 90 && age <= 100) ageGroup = "nineties"
+    if (age >= 100 && age <= 200) ageGroup = "hundreds"
+
+    return ageGroup
 }
 
 /**
@@ -80,11 +94,11 @@ async function test() {
     await registerAgeAndColor(32, "yellow");
     await registerAgeAndColor(13, "red");
     await registerAgeAndColor(43, "white");
-    console.log(await getTop3Colors());
+    console.log(await getTop3Colors(42));
     driver.close();
 }
 
-// test();
+test();
 
 module.exports = {
     getTop3Colors,
