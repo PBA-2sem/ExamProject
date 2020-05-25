@@ -88,17 +88,52 @@ async function _deleteAllNodesAndRelationships() {
     }
 }
 
+function _getRandomNumber() {
+    return Math.floor(Math.random() * (100 - 1) + 1);
+}
+function _getrandomColor() {
+    let colors = [
+        "Aquamarine",
+        "Blue",
+        "Crimson",
+        "Fuscia",
+        "Goldenrod",
+        "Green",
+        "Indigo",
+        "Khaki",
+        "Maroon",
+        "Mauv",
+        "Orange",
+        "Pink",
+        "Puce",
+        "Purple",
+        "Red",
+        "Teal",
+        "Turquoise",
+        "Violet",
+        "Yellow"
+    ]
+    return colors[Math.floor(Math.random() * colors.length)];
+}
 
-// TESTING
-async function test() {
-    await registerAgeAndColor(32, "yellow");
-    await registerAgeAndColor(13, "red");
-    await registerAgeAndColor(43, "white");
-    console.log(await getTop3Colors(42));
+
+async function _fillNumberOfDummyRecommendationsAndRelationships(number) {
+
+    for (let i = 0; i < number; i++) {
+        await registerAgeAndColor(_getRandomNumber(), _getrandomColor());
+    }
+
     driver.close();
 }
 
-test();
+// DUMMY DATA
+async function fillDummyData() {
+    await _fillNumberOfDummyRecommendationsAndRelationships(500);
+    driver.close();
+}
+
+// fillDummyData();
+
 
 module.exports = {
     getTop3Colors,
