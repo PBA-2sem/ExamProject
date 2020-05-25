@@ -28,7 +28,7 @@ const redis = new Redis.Cluster([
     }
 ], {
     redisOptions: {
-        password: process.env.REDIS_PASSWORD
+        password: 'teamwingitisawesome'
     }
 });
 

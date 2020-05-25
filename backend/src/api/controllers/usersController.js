@@ -18,8 +18,7 @@ async function login(username, password) {
         // Get session from redis
         const inRedis = await getUserSession(user.id);
         if (inRedis) {
-            user = { ...user, data: inRedis }
-            return { user: user };
+            return { user: user, data: inRedis };
         } else {
             // Set new session for user without payload
             await setUserSessionFromLogin(user)
@@ -31,7 +30,18 @@ async function login(username, password) {
     }
 }
 
+async function loginWithSession(userID) {
+    console.log(userID)
+    const inRedis = await getUserSession(userID);
+    console.log(inRedis)
+    if (inRedis) {
+        return { data: inRedis };
+    } else 
+        throw Error('UserIDs session has expired in Redis');
+}
+
 module.exports = {
     createUser,
     login,
+    loginWithSession
 }
