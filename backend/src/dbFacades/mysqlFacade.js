@@ -3,9 +3,9 @@ const mysql = require('mysql2/promise');
 
 // create pool to db
 const pool = mysql.createPool({
+    user: 'school',
     host: '207.154.222.88',
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
+    password: 'veryLongComplicatedpwd1',
     database: 'biglers_biler',
     waitForConnections: true,
     connectionLimit: 5,
@@ -14,6 +14,8 @@ const pool = mysql.createPool({
 
 async function getUserByUsername(username) {
     try {
+        console.log(pool.pool.config)
+        console.log("_________________________________")
         const [rows, fields] = await pool.execute('SELECT * FROM user where username =?', [username]);
         return rows[0];
     } catch (err) {
