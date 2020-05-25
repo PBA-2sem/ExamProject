@@ -4,6 +4,7 @@ import SignIn from './components/SignIn'
 import Signup from './components/SignUp'
 // import Modal from './components/Modal';
 import UserFacade from './facades/UserFacade'
+import OrderFacade from './facades/OrderFacade'
 import ProductsFacade from './facades/ProductsFacade';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import Products from './components/Products';
@@ -42,7 +43,7 @@ class App extends React.Component {
     data = await UserFacade.checkStoredSession(user);
     console.log('data', data)
     if (data && !data.error) {
-      if (data.shoppingCart) shoppingCart = data.shoppingCart;
+      if (data.data.shoppingCart) shoppingCart = data.data.shoppingCart;
     } else {
       localStorage.removeItem('user');
       data = null;
@@ -96,7 +97,7 @@ class App extends React.Component {
     }
   }
 
-  handleAddToCart = (e, product) => {
+  handleAddToCart = async (e, product) => {
     e.preventDefault()
     e.stopPropagation();
 
@@ -109,11 +110,11 @@ class App extends React.Component {
     } else {
       shoppingCart.push({ ...product, amount: 1 });
     }
-
+    await OrderFacade.updateShoppingcart({ user: this.state.user, data: { shoppingCart: shoppingCart } })
     this.setState({ shoppingCart: shoppingCart })
   }
 
-  handleRemoveFromCart = (e, product) => {
+  handleRemoveFromCart = async (e, product) => {
     e.preventDefault()
     e.stopPropagation();
 
@@ -128,6 +129,7 @@ class App extends React.Component {
       shoppingCart = shoppingCart.filter(p => p.productId !== product.productId);
     }
 
+    await OrderFacade.updateShoppingcart({ user: this.state.user, data: { shoppingCart: shoppingCart } })
     this.setState({ shoppingCart: shoppingCart })
   }
 

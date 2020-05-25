@@ -27,7 +27,6 @@ class UserFacade {
         const response = await fetch(URL + '/users/loginWithSession', data).then(res => {
             return res.json();
         });
-        console.log('checkstored ', response)
         return response;
     }
 

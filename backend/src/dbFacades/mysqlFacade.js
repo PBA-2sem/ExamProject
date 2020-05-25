@@ -14,8 +14,6 @@ const pool = mysql.createPool({
 
 async function getUserByUsername(username) {
     try {
-        console.log(pool.pool.config)
-        console.log("_________________________________")
         const [rows, fields] = await pool.execute('SELECT * FROM user where username =?', [username]);
         return rows[0];
     } catch (err) {
