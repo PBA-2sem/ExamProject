@@ -17,7 +17,7 @@ class App extends React.Component {
       username: "",
       password: "",
       user: null,
-      age: 0,
+      age: undefined,
       country: "",
       loadingSpinner: false,
       shoppingCart: [],
@@ -60,6 +60,7 @@ class App extends React.Component {
         user: response.user,
       })
       localStorage.setItem('user', response.user);
+      alert('Logged in go shop amok!')
     }
   }
 
@@ -139,8 +140,22 @@ class App extends React.Component {
             }
           </header>
           <hr />
-          <Route exact path="/login" render={() => <SignIn handleInputChange={this.handleInputChange} handleLogin={this.handleLogin} />} />
-          <Route exact path="/signUp" render={() => <Signup handleInputChange={this.handleInputChange} handleCreateUser={this.handleCreateUser} />} />
+          <Route exact path="/login" render={() =>
+            <SignIn
+              username={this.state.username}
+              password={this.state.password}
+              handleInputChange={this.handleInputChange}
+              handleLogin={this.handleLogin}
+            />} />
+          <Route exact path="/signUp" render={() =>
+            <Signup
+              username={this.state.username}
+              password={this.state.password}
+              age={this.state.age}
+              country={this.state.country}
+              handleInputChange={this.handleInputChange}
+              handleCreateUser={this.handleCreateUser}
+            />} />
           <Route exact path="/"
             render={() => (<div>
               <Products

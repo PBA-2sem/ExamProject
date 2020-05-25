@@ -39,12 +39,14 @@ export default function SignUp(props) {
             id="username"
             label="Username"
             name="username"
+            value={props.username}
             autoFocus
             onChange={props.handleInputChange}
-          />
+            />
           <TextField
             variant="outlined"
             margin="normal"
+            value={props.password}
             required
             fullWidth
             name="password"
@@ -52,19 +54,21 @@ export default function SignUp(props) {
             type="password"
             id="password"
             onChange={props.handleInputChange}
-          />
+            />
           <TextField
             variant="outlined"
             margin="normal"
             required
+            value={props.age}
             fullWidth
             name="age"
             label="Age"
             type="number"
             id="age"
             onChange={props.handleInputChange}
-          />
+            />
           <TextField
+            value={props.country}
             variant="outlined"
             margin="normal"
             required
