@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const auth = require('../auth');
 
-const { createUser, login } = require('../controllers/usersController');
+const { createUser, login, loginWithSession } = require('../controllers/usersController');
 
 // TODO: get user if authorized (get session data from redis)
 // get user data if already logged in
@@ -20,6 +20,21 @@ router.post('/login', async (req, res, next) => {
 
     try {
         const result = await login(req.body.username, req.body.password);
+        return res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        return res.status(401).json({ error: err.message });
+    }
+
+});
+
+router.post('/loginWithSession', async (req, res, next) => {
+    if (!req.body.userID) {
+        return res.status(422).json({ error: 'UserID is missing!' });
+    }
+
+    try {
+        const result = await loginWithSession(req.body.userID);
         return res.status(200).json(result);
     } catch (err) {
         console.log(err);
