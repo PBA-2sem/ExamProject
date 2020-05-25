@@ -26,15 +26,30 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-
-    let storedUser = localStorage.getItem('user');
-    let data = null;
+    let storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
-      //TODO: get redis data;
+      await this.handleSessionRequest(storedUser);
+    }
+    const res = await ProductsFacade.getAllProducts();
+    this.setState({ products: res });
+  }
+
+  handleSessionRequest = async (user) => {
+    let userData = user;
+    let data = null;
+    let shoppingCart = [];
+
+    data = await UserFacade.checkStoredSession(user);
+    console.log('data', data)
+    if (data && !data.error) {
+      if (data.shoppingCart) shoppingCart = data.shoppingCart;
+    } else {
+      localStorage.removeItem('user');
+      data = null;
+      userData = null;
     }
 
-    const res = await ProductsFacade.getAllProducts();
-    this.setState({ products: res, user: storedUser, data: data });
+    this.setState({ user: userData, data: data, shoppingCart: shoppingCart })
   }
 
   handleInputChange = (event) => {
@@ -53,13 +68,14 @@ class App extends React.Component {
     if (response.error) {
       alert(response.error)
     } else {
+      localStorage.setItem('user', JSON.stringify(response.user));
+      await this.handleSessionRequest(response.user);
       this.setState({
         loggedIn: true,
         username: "",
         password: "",
         user: response.user,
       })
-      localStorage.setItem('user', response.user);
       alert('Logged in go shop amok!')
     }
   }
@@ -132,7 +148,7 @@ class App extends React.Component {
             <NavLink exact to="/">Shop</NavLink>
             {!user && <>
               <NavLink exact to="/login">Sign In</NavLink>
-              <NavLink exact to="/signUp">Sign Up</NavLink>
+              <NavLink exact to="/signup">Sign Up</NavLink>
             </>
             }
             {user &&
@@ -140,22 +156,6 @@ class App extends React.Component {
             }
           </header>
           <hr />
-          <Route exact path="/login" render={() =>
-            <SignIn
-              username={this.state.username}
-              password={this.state.password}
-              handleInputChange={this.handleInputChange}
-              handleLogin={this.handleLogin}
-            />} />
-          <Route exact path="/signUp" render={() =>
-            <Signup
-              username={this.state.username}
-              password={this.state.password}
-              age={this.state.age}
-              country={this.state.country}
-              handleInputChange={this.handleInputChange}
-              handleCreateUser={this.handleCreateUser}
-            />} />
           <Route exact path="/"
             render={() => (<div>
               <Products
@@ -164,6 +164,22 @@ class App extends React.Component {
               />
             </div>)}
           />
+          <Route exact path="/login" render={() =>
+            <SignIn
+              username={this.state.username}
+              password={this.state.password}
+              handleInputChange={this.handleInputChange}
+              handleLogin={this.handleLogin}
+            />} />
+          <Route exact path="/signup" render={() =>
+            <Signup
+              username={this.state.username}
+              password={this.state.password}
+              age={this.state.age}
+              country={this.state.country}
+              handleInputChange={this.handleInputChange}
+              handleCreateUser={this.handleCreateUser}
+            />} />
           <Route exact path="/shoppingcart"
             render={() => (<div>
               <ShoppingCart
