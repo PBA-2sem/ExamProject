@@ -3,9 +3,9 @@ const mysql = require('mysql2/promise');
 
 // create pool to db
 const pool = mysql.createPool({
-    user: 'school',
     host: '207.154.222.88',
-    password: 'veryLongComplicatedpwd1',
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
     database: 'biglers_biler',
     waitForConnections: true,
     connectionLimit: 5,
