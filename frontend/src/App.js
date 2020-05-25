@@ -16,6 +16,7 @@ class App extends React.Component {
       userId: "",
       username: "",
       password: "",
+      user: {},
       age: 0,
       country: "",
       loggedIn: false,
@@ -58,12 +59,13 @@ class App extends React.Component {
     let response = await UserFacade.createUser({ username, password, age, country })
     if (response.error) alert(response.error);
     else {
-      alert(response.user);
       this.setState({
         loggedIn: false,
         username: "",
-        password: ""
+        password: "",
+        user: response.user,
       })
+      alert('User created! Please login')
     }
   }
 
@@ -78,8 +80,8 @@ class App extends React.Component {
               <NavLink exact to="/signUp">Sign Up</NavLink>
             </header>
             <hr />
-            <Route exact path="/" render={() => <SignIn handleInputChange={this.handleInputChange} handleLogin={this.handleLogin} />} />
-            <Route exact path="/signUp" render={() => <Signup handleInputChange={this.handleInputChange} handleCreateUser={this.handleCreateUser} />} />
+            <Route exact path="/" render={(props) => <SignIn handleInputChange={this.handleInputChange} handleLogin={this.handleLogin} />} />
+            <Route exact path="/signUp" render={(props) => <Signup handleInputChange={this.handleInputChange} handleCreateUser={this.handleCreateUser} />} />
           </div>
         </Router>
       )
