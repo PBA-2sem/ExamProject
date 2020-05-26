@@ -6,7 +6,7 @@ const driver = new neo4j.driver("neo4j://localhost:7687", neo4j.auth.basic("neo4
 /**
  * Get top 3 color names as array in descending order (largest to lowest)
  */
-async function getTop3Colors(age) {
+async function findTop3Colors(age) {
 
     let ageGroup = _getAgeGroup(age)
 
@@ -44,7 +44,7 @@ async function registerAgeAndColor(age, color) {
         await session.run("MATCH (a:agegroup),(c:color) WHERE a.name = $name AND c.name = $color CREATE (a)-[r:ADDED]->(c) RETURN type(r);", { name: ageGroup, color: color })
 
         session.close()
-        return
+        return {ageGroup: ageGroup, color: color}
     } catch (err) {
         console.log('ERROR: ', err)
         throw Error('A DB error happened')
@@ -136,6 +136,6 @@ async function fillDummyData() {
 
 
 module.exports = {
-    getTop3Colors,
+    findTop3Colors,
     registerAgeAndColor
 }

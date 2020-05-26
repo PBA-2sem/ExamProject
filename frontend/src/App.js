@@ -6,6 +6,7 @@ import Signup from './components/SignUp'
 import UserFacade from './facades/UserFacade'
 import OrderFacade from './facades/OrderFacade'
 import ProductsFacade from './facades/ProductsFacade';
+import Neo4jFacade from './facades/Neo4jFacade';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import Products from './components/Products';
 import ShoppingCart from './components/ShoppingCart';
@@ -42,7 +43,7 @@ class App extends React.Component {
 
     data = await UserFacade.checkStoredSession(user);
     console.log('data', data)
-    if (data && !data.error) {
+    if (data.data && !data.error) {
       if (data.data.shoppingCart) shoppingCart = data.data.shoppingCart;
     } else {
       localStorage.removeItem('user');
@@ -111,7 +112,21 @@ class App extends React.Component {
       shoppingCart.push({ ...product, amount: 1 });
     }
     await OrderFacade.updateShoppingcart({ user: this.state.user, data: { shoppingCart: shoppingCart } })
+
+    //NEO4J RECOMMENDATION ENGINE
+
+    //Send age color to Neo4j 
+    let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({age: this.state.user.age, color: product.color })
+    console.log(registeredData)
+
+    //get top 3 color recommendations
+    let top3ColorRecommendations = await Neo4jFacade.getTop3Products({ age: this.state.user.age });
+    console.log(top3ColorRecommendations)
+
+
     this.setState({ shoppingCart: shoppingCart })
+
+
   }
 
   handleRemoveFromCart = async (e, product) => {
