@@ -2,7 +2,7 @@
     "user_id" : 1,
     "date": "1234567", 
     "product": {
-        "productIDd" : "1234",
+        "productID" : "1234",
         "make": "Tyota",
         "model": "4runner",
         "colour": "red"  
