@@ -116,7 +116,7 @@ class App extends React.Component {
     //NEO4J RECOMMENDATION ENGINE
 
     //Send age color to Neo4j 
-    let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({age: this.state.user.age, color: product.color })
+    let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({ age: this.state.user.age, color: product.color })
     console.log(registeredData)
 
     //get top 3 color recommendations

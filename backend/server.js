@@ -1,7 +1,8 @@
+const envStuff = require('dotenv').config({ debug: true });
+console.log(envStuff);
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config();
 
 const api = require('./src/api');
 
