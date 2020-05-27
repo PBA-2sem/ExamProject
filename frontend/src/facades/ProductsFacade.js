@@ -10,5 +10,12 @@ class ProductsFacade {
         return response;
     }
 
+    async get3ProdByColor(data) {
+        let response = await fetch(URL + '/products/color/'+data.color).then(res => {
+            return res.json();
+        });
+        return response;
+    }
+
 }
 export default new ProductsFacade();

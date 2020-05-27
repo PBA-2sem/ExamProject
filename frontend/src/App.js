@@ -117,15 +117,18 @@ class App extends React.Component {
 
     //Send age color to Neo4j 
     let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({age: this.state.user.age, color: product.color })
-    console.log(registeredData)
 
     //get top 3 color recommendations
     let top3ColorRecommendations = await Neo4jFacade.getTop3Products({ age: this.state.user.age });
-    console.log(top3ColorRecommendations)
+
+    // query mysql for 3 random products by color
+    let threeProductsByColor = await ProductsFacade.get3ProdByColor({color:top3ColorRecommendations[0]}); //change
+
+
+    //TODO display somehow
 
 
     this.setState({ shoppingCart: shoppingCart })
-
 
   }
 

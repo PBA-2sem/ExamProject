@@ -1,12 +1,12 @@
-const { getProducts, getProdByCategory, getProduct } = require('../../dbFacades/mysqlFacade');
+const { getProducts, get3ProdByColor, getProduct } = require('../../dbFacades/mysqlFacade');
 
 async function getAllProducts() {
     const result = await getProducts();
     return result;
 }
 
-async function getProductByCategory(category) {
-    const result = await getProdByCategory(category);
+async function getThreeProdByColor(color) {
+    const result = await get3ProdByColor(color);
     return result;
 }
 
@@ -18,6 +18,6 @@ async function getProductById(id) {
 
 module.exports = {
     getAllProducts,
-    getProductByCategory,
+    get3ProdByColor:getThreeProdByColor,
     getProductById
 }
