@@ -3,42 +3,25 @@ const redis = new Redis.Cluster([
     {
         port: 6001,
         host: "34.207.62.135",
-    },
-    {
-        port: 6001,
-        host: "3.85.54.175",
-    },
-    {
-        port: 6001,
-        host: "52.91.150.136",
-
-    },
-    {
-        port: 6002,
-        host: "34.207.62.135",
-    },
-    {
-        port: 6002,
-        host: "3.85.54.175",
-    },
-    {
-        port: 6002,
-        host: "52.91.150.136",
-
     }
 ], {
+    scaleReads: "slave",
+    slotsRefreshInterval: 100,
     redisOptions: {
         password: process.env.REDIS_PASSWORD
     }
 });
 
 function connect() {
-    redis.on("error", function (err) {
-        console.log("redis connection error " + err);
-        process.exit(1);
+    redis.on("error", function () {
+        console.log("redis connection error ");
     });
 
-    return redis.on("connect", async () => {
+    redis.on("reconnecting", function () {
+        console.log("redis reconnect");
+    });
+
+    return redis.on("connect", () => {
         // redis.del('c9444ac7-9d19-11ea-9249-f201836c1c4e');
         console.log("redis connected established..");
     });
@@ -78,7 +61,6 @@ async function setUserSessionWithPayload(id, payload) {
 }
 
 module.exports = {
-    connect,
     getUserSession,
     setUserSessionFromLogin,
     setUserSessionWithPayload

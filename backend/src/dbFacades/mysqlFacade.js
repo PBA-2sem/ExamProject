@@ -60,9 +60,9 @@ async function getProducts() {
     }
 }
 
-async function getProdByCategory(category) {
+async function get3ProdByColor(color) {
     try {
-        const [rows, fields] = await pool.execute('SELECT * FROM product where category= ?', [category]);
+        const [rows, fields] = await pool.execute('SELECT * FROM product where color= ? ORDER BY RAND() LIMIT 3', [color]);
         return rows;
     } catch (err) {
         console.log('ERROR: ', err)
@@ -76,5 +76,5 @@ module.exports = {
     addUser,
     getProduct,
     getProducts,
-    getProdByCategory,
+    get3ProdByColor,
 }

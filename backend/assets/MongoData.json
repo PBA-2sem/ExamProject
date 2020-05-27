@@ -1,0 +1,10 @@
+{
+    "user_id" : 1,
+    "date": "1234567", 
+    "product": {
+        "productID" : "1234",
+        "make": "Tyota",
+        "model": "4runner",
+        "colour": "red"  
+    }
+}
