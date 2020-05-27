@@ -6,24 +6,51 @@ const MongoClient = require('mongodb').MongoClient;
 
 const mongodb = MongoClient.connect(url);
 
+insertDocuments();
+
 async function insertDocuments(data) {
+
+    // const data = {      
+    //         _id: "c9444ac7-9d19-11ea-9249-f201836c1c4e",
+    //             orders: [
+    //                 {
+    //                     date: "A DATE",
+    //                     cars: [
+    //                         {
+    //                             "productid": 4,
+    //                             "mode": 'fortwo',
+    //                             "make": 'Cavalier',
+    //                             "color": 'Puce',
+    //                             "price": 32
+    //                         },
+    //                         {
+    //                             "productid": 2,
+    //                             "mode": 'forasdsatwo',
+    //                             "make": 'Cavaasdsalier',
+    //                             "color": 'Puasdasce',
+    //                             "price": 133
+    //                         }
+    //                     ]
+    //                 }
+
+    //             ]
+    //     }
 
     const db = MongoClient(url, { useUnifiedTopology: true });
     const dbConnect = await db.connect();
-    const dbc = dbConnect.db("biglers_biler").collection("orders");
-    const collection = db.collection("orders");
+    const dbc = await dbConnect.db("biglers_biler");
+    const collection = await dbc.collection("orders");
 
-    const checkifexist = await db.documentExistsOrNotDemo.find({ "userid": data }).count() > 0;
-    if (checkifexist = false) {
-        await collection.insert({ data }, function (err, result) {
-            console.log(err);
-            callback(result);
-        });
+    const checkifexist = await collection.find({ _id: data._id }).count() > 0;
+
+    if (checkifexist == false) {
+
+        await collection.insertOne({ _id: data._id, ...data });
     }
     else {
-        await collection.update(
-            { _id: userId },
-            { $push: { orders: { order: data } } }
+
+        await collection.updateOne(
+            { _id: data._id }, { $push: { orders: data.orders[0] } }
         )
     }
 

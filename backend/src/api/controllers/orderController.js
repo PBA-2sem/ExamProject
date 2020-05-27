@@ -10,8 +10,8 @@ const result = await getAllOrders();
 return result;
 }
 
-async function insertSingleDocument (){
- const result = await insertDocuments(data);
+async function insertSingleDocument (data){
+ const result = await insertDocuments(data.user.id, data);
  
 }
 

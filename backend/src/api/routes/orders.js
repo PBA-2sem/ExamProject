@@ -28,9 +28,8 @@ router.put('/shoppingcart', async (req, res, next) => {
 
 // create order
 router.post('/insert/:id', async function (req, res, next) {
-    const {id} = req.param()
-    try {
-        const result = await insertSingleDocument();
+   try {
+        const result = await insertSingleDocument(req.body);
         return res.status(200).json(result);
     } catch (err) {
         console.log(err);
