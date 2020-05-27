@@ -8,5 +8,6 @@ router.get('/ping', (req, resp) => {
 router.use('/users', require('./routes/users'));
 router.use('/products', require('./routes/products'));
 router.use('/orders', require('./routes/orders'));
+router.use('/neo4j', require('./routes/neo4j'));
 
 module.exports = router;

@@ -28,7 +28,7 @@ export default function SignIn(props) {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in!!
+          Sign in
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -41,6 +41,7 @@ export default function SignIn(props) {
             name="username"
             autoComplete="username"
             autoFocus
+            value={props.username}
             onChange={props.handleInputChange}
           />
           <TextField
@@ -52,6 +53,7 @@ export default function SignIn(props) {
             label="Password"
             type="password"
             id="password"
+            value={props.password}
             autoComplete="current-password"
             onChange={props.handleInputChange}
           />

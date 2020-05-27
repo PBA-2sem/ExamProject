@@ -22,5 +22,13 @@ class UserFacade {
         return user;
     }
 
+    async checkStoredSession(user) {
+        const data = makeOptions("POST", { userID: user.id });
+        const response = await fetch(URL + '/users/loginWithSession', data).then(res => {
+            return res.json();
+        });
+        return response;
+    }
+
 }
 export default new UserFacade();

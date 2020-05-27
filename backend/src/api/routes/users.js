@@ -3,15 +3,7 @@ const auth = require('../auth');
 
 const { createUser, login, loginWithSession } = require('../controllers/usersController');
 
-// TODO: get user if authorized (get session data from redis)
-// get user data if already logged in
-router.get('/user', auth.isAuthorized, function (req, res, next) {
-    // if (!user) { return res.sendStatus(401); }
-    return res.json({});
-});
 
-
-// TODO: create login logic (create a session in redis)
 // Login
 router.post('/login', async (req, res, next) => {
     if (!req.body.username || !req.body.password) {

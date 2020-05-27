@@ -9,7 +9,6 @@ async function createUser(username, password, age, country) {
     return user;
 }
 
-// TODO : handle login with storing a session in redis (if present add session data to returned object)
 async function login(username, password) {
     let user = await getUserByUsername(username);
     if (bcrypt.compareSync(password, user.password)) {
@@ -22,7 +21,6 @@ async function login(username, password) {
         } else {
             // Set new session for user without payload
             await setUserSessionFromLogin(user)
-            console.log(user.id)
             return { user: user };
         }
     } else {
@@ -31,12 +29,10 @@ async function login(username, password) {
 }
 
 async function loginWithSession(userID) {
-    console.log(userID)
     const inRedis = await getUserSession(userID);
-    console.log(inRedis)
     if (inRedis) {
-        return { data: inRedis };
-    } else 
+        return { ...inRedis };
+    } else
         throw Error('UserIDs session has expired in Redis');
 }
 
