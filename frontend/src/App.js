@@ -116,19 +116,20 @@ class App extends React.Component {
     //NEO4J RECOMMENDATION ENGINE
 
     //Send age color to Neo4j 
-    let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({age: this.state.user.age, color: product.color })
+    let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({ age: this.state.user.age, color: product.color })
 
     //get top 3 color recommendations
     let top3ColorRecommendations = await Neo4jFacade.getTop3Products({ age: this.state.user.age });
 
     // query mysql for 3 random products by color
-    let threeProductsByColor = await ProductsFacade.get3ProdByColor({color:top3ColorRecommendations[0]}); //change
+    let recommendedProductsByColor = await ProductsFacade.get3ProdByColor({ color: top3ColorRecommendations[0] }); //just querying with 1/3 colors
 
+    console.log(recommendedProductsByColor);
 
     //TODO display somehow
 
 
-    this.setState({ shoppingCart: shoppingCart })
+    this.setState({ shoppingCart: shoppingCart, recommendedProducts: recommendedProductsByColor })
 
   }
 
@@ -159,7 +160,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { products, user, shoppingCart } = this.state;
+    const { products, user, shoppingCart, recommendedProducts } = this.state;
     const cartSize = this.cartProductCount(shoppingCart);
     return (
       <Router >
@@ -169,11 +170,25 @@ class App extends React.Component {
             {!user && <>
               <NavLink exact to="/login">Sign In</NavLink>
               <NavLink exact to="/signup">Sign Up</NavLink>
+
             </>
             }
-            {user &&
+            {user && <>
               <NavLink exact to="/shoppingcart" >Shoppingcart {cartSize > 0 && cartSize}</NavLink>
+            </>
             }
+            {user && recommendedProducts &&
+              <>
+                Recommended Products: {recommendedProducts.map(product => (
+                <div key={product.productId}>
+                  {JSON.stringify(product)}
+                </div>
+              ))}
+              </>
+            }
+
+
+
           </header>
           <hr />
           <Route exact path="/"
