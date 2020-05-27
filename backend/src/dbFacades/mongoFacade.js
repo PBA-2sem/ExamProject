@@ -4,25 +4,30 @@ const MongoClient = require('mongodb').MongoClient;
 
 
 
-//const mongodb = MongoClient.connect(url);
+const mongodb = MongoClient.connect(url);
 
-// const insertDocuments = function (order) {
+async function insertDocuments(data) {
 
-//     const db = MongoClient(url, { useUnifiedTopology: true });
-//     const dbConnect = await db.connect();
-//     const dbc = dbConnect.db("biglers_biler");
-//     const collection = db.collection("orders");
+    const db = MongoClient(url, { useUnifiedTopology: true });
+    const dbConnect = await db.connect();
+    const dbc = dbConnect.db("biglers_biler").collection("orders");
+    const collection = db.collection("orders");
 
-//     collection.insert({order},function (err, result) {
-//         console.log(err);
-//         callback(result);
-//     });
+    const checkifexist = await db.documentExistsOrNotDemo.find({ "userid": data }).count() > 0;
+    if (checkifexist = false) {
+        await collection.insert({ data }, function (err, result) {
+            console.log(err);
+            callback(result);
+        });
+    }
+    else {
+        await collection.update(
+            { _id: userId },
+            { $push: { orders: { order: data } } }
+        )
+    }
 
-//     collection.update(
-//         { _id: userId },
-//         { $push: { orders: {order data} } }
-//      )
-// };
+};
 
 async function getAllOrders() {
     const res = [];
@@ -43,9 +48,8 @@ async function getAllOrders() {
     }
 }
 
-module.exports = {
 
+module.exports = {
     insertDocuments,
     getAllOrders
-
 }

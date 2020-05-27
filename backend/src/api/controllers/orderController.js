@@ -8,8 +8,8 @@ const result = await getAllOrders();
 return result;
 }
 
-const insertSingleDocument = function(){
-   const result
+async function insertSingleDocument (){
+ const result = await insertDocuments(data);
  
 }
 
