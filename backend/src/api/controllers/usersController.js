@@ -17,7 +17,7 @@ async function login(username, password) {
         // Get session from redis
         const inRedis = await getUserSession(user.id);
         if (inRedis) {
-            return { user: user, data: inRedis };
+            return { user: user, ...inRedis };
         } else {
             // Set new session for user without payload
             await setUserSessionFromLogin(user)
@@ -29,7 +29,9 @@ async function login(username, password) {
 }
 
 async function loginWithSession(userID) {
+    console.log(userID)
     const inRedis = await getUserSession(userID);
+    console.log(inRedis)
     if (inRedis) {
         return { ...inRedis };
     } else

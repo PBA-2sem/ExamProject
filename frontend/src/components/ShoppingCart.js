@@ -13,6 +13,8 @@ import ShoppingBasket from '@material-ui/icons/ShoppingBasket';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
+import Products from '../components/Products'
+
 const useStyles = makeStyles({
     root: {
         width: '100%',
@@ -22,7 +24,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function StickyHeadTable({ shoppingCart, removeFromCart }) {
+export default function StickyHeadTable({ shoppingCart, removeFromCart, recommendedProducts, addToCart,  }) {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
@@ -92,6 +94,16 @@ export default function StickyHeadTable({ shoppingCart, removeFromCart }) {
             >
                 SEND ORDER
             </Button>
+
+            {recommendedProducts.length > 0
+                &&
+                <Products
+                    make={'You might also like following products'}
+                    model={'-'}
+                    color={'-'}
+                    products={recommendedProducts}
+                    addToCart={addToCart}
+                />}
         </div>
     )
 }

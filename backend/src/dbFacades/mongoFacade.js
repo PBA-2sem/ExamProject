@@ -6,8 +6,6 @@ const MongoClient = require('mongodb').MongoClient;
 
 const mongodb = MongoClient.connect(url);
 
-insertDocuments();
-
 async function insertDocuments(data) {
 
     // const data = {      

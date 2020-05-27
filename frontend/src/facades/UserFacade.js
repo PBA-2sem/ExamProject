@@ -16,7 +16,6 @@ class UserFacade {
     async createUser(userData) {
         const data = makeOptions("POST", userData);
         const user = await fetch(URL + '/users', data).then(res => {
-            console.log(res)
             return res.json();
         });
         return user;

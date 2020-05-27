@@ -21,8 +21,9 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/loginWithSession', async (req, res, next) => {
+    console.log(req.body)
     if (!req.body.userID) {
-        return res.status(422).json({ error: 'UserID is missing!' });
+        return res.status(422).json({ error: 'UserId is missing!' });
     }
 
     try {
@@ -30,7 +31,7 @@ router.post('/loginWithSession', async (req, res, next) => {
         return res.status(200).json(result);
     } catch (err) {
         console.log(err);
-        return res.status(401).json({ error: err.message });
+        return res.status(422).json({ error: err.message });
     }
 
 });

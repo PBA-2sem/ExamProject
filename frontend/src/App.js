@@ -23,35 +23,39 @@ class App extends React.Component {
       country: "",
       loadingSpinner: false,
       shoppingCart: [],
+      recommendedProducts: [],
+      products: [],
     }
 
   }
 
   async componentDidMount() {
+    console.log('COMP DID MOUNT')
     let storedUser = JSON.parse(localStorage.getItem('user'));
+    let requestData = { userData: null, data: null, shoppingCart: [] };
     if (storedUser) {
-      await this.handleSessionRequest(storedUser);
+      requestData = await this.handleSessionRequest(storedUser);
     }
     const res = await ProductsFacade.getAllProducts();
-    this.setState({ products: res });
+    // this.setState({ products: res, })
+    this.setState({ products: res, user: requestData.userData, data: requestData.data, shoppingCart: requestData.shoppingCart })
   }
 
   handleSessionRequest = async (user) => {
-    let userData = user;
-    let data = null;
-    let shoppingCart = [];
+    console.log(user);
+    let processed = { userData: user, data: null, shoppingCart: [] }
 
-    data = await UserFacade.checkStoredSession(user);
-    console.log('data', data)
-    if (data.data && !data.error) {
-      if (data.data.shoppingCart) shoppingCart = data.data.shoppingCart;
+    const response = await UserFacade.checkStoredSession(user);
+    console.log('data', response.data)
+    if (response.data && !response.error) {
+      if (response.data.shoppingCart) processed.shoppingCart = response.data.shoppingCart;
     } else {
       localStorage.removeItem('user');
-      data = null;
-      userData = null;
+      processed.data = null;
+      processed.userData = null;
     }
 
-    this.setState({ user: userData, data: data, shoppingCart: shoppingCart })
+    return processed;
   }
 
   handleInputChange = (event) => {
@@ -116,7 +120,7 @@ class App extends React.Component {
     //NEO4J RECOMMENDATION ENGINE
 
     //Send age color to Neo4j 
-    let registeredData = await Neo4jFacade.registerProductAddedToShoppingCart({ age: this.state.user.age, color: product.color })
+    await Neo4jFacade.registerProductAddedToShoppingCart({ age: this.state.user.age, color: product.color })
 
     //get top 3 color recommendations
     let top3ColorRecommendations = await Neo4jFacade.getTop3Products({ age: this.state.user.age });
@@ -125,9 +129,6 @@ class App extends React.Component {
     let recommendedProductsByColor = await ProductsFacade.get3ProdByColor({ color: top3ColorRecommendations[0] }); //just querying with 1/3 colors
 
     console.log(recommendedProductsByColor);
-
-    //TODO display somehow
-
 
     this.setState({ shoppingCart: shoppingCart, recommendedProducts: recommendedProductsByColor })
 
@@ -177,16 +178,6 @@ class App extends React.Component {
               <NavLink exact to="/shoppingcart" >Shoppingcart {cartSize > 0 && cartSize}</NavLink>
             </>
             }
-            {user && recommendedProducts &&
-              <>
-                Recommended Products: {recommendedProducts.map(product => (
-                <div key={product.productId}>
-                  {JSON.stringify(product)}
-                </div>
-              ))}
-              </>
-            }
-
 
 
           </header>
@@ -220,6 +211,8 @@ class App extends React.Component {
               <ShoppingCart
                 shoppingCart={shoppingCart}
                 removeFromCart={this.handleRemoveFromCart}
+                recommendedProducts={recommendedProducts}
+                addToCart={this.handleAddToCart}
               />
             </div>)}
           />

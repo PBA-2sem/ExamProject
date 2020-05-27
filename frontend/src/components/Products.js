@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function StickyHeadTable({ products, addToCart }) {
+export default function StickyHeadTable({ products, addToCart, make, model, color, price }) {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
@@ -34,17 +34,16 @@ export default function StickyHeadTable({ products, addToCart }) {
         setPage(0);
     };
 
-
     return (
         <Paper className={classes.root}>
             <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Make</TableCell>
-                            <TableCell align="right">Model</TableCell>
-                            <TableCell align="right">Color</TableCell>
-                            <TableCell align="right">Price</TableCell>
+                            <TableCell>{make || 'Make'}</TableCell>
+                            <TableCell align="right">{model || 'Model'}</TableCell>
+                            <TableCell align="right">{color || 'Color'}</TableCell>
+                            <TableCell align="right">{price || 'Price'}</TableCell>
                             <TableCell align="right">  </TableCell>
                         </TableRow>
                     </TableHead>
