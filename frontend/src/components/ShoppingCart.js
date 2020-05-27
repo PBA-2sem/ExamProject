@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function StickyHeadTable({ shoppingCart, removeFromCart, recommendedProducts, addToCart,  }) {
+export default function StickyHeadTable({ shoppingCart, removeFromCart, recommendedProducts, addToCart, sendOrder }) {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
@@ -87,7 +87,7 @@ export default function StickyHeadTable({ shoppingCart, removeFromCart, recommen
             <Button
                 style={{ float: 'right' }}
                 startIcon={<ShoppingBasket fontSize="inherit" />}
-                onClick={(e) => console.log('jeff')}
+                onClick={(e) => sendOrder(e)}
                 size="large"
                 color="primary"
                 aria-label="checkout"

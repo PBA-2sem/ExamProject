@@ -30,7 +30,6 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    console.log('COMP DID MOUNT')
     let storedUser = JSON.parse(localStorage.getItem('user'));
     let requestData = { userData: null, data: null, shoppingCart: [] };
     if (storedUser) {
@@ -42,11 +41,9 @@ class App extends React.Component {
   }
 
   handleSessionRequest = async (user) => {
-    console.log(user);
     let processed = { userData: user, data: null, shoppingCart: [] }
 
     const response = await UserFacade.checkStoredSession(user);
-    console.log('data', response.data)
     if (response.data && !response.error) {
       if (response.data.shoppingCart) processed.shoppingCart = response.data.shoppingCart;
     } else {
@@ -65,7 +62,6 @@ class App extends React.Component {
   }
 
   handleLogin = async (event) => {
-
     event.preventDefault();
     const { username, password } = this.state
     let credentials = { username: username, password: password }
@@ -160,6 +156,23 @@ class App extends React.Component {
     }, 0)
   }
 
+  sendOrder = async (e) => {
+    e.preventDefault();
+
+    await OrderFacade.sendOrder({
+      _id: this.state.user.id,
+      orders: [
+        {
+          date: new Date(),
+          products: [...this.state.shoppingCart]
+        }
+      ]
+    });
+    OrderFacade.updateShoppingcart({ user: this.state.user, data: {} })
+
+    this.setState({ shoppingCart: [], recommendedProducts: [] });
+  }
+
   render() {
     const { products, user, shoppingCart, recommendedProducts } = this.state;
     const cartSize = this.cartProductCount(shoppingCart);
@@ -213,6 +226,7 @@ class App extends React.Component {
                 removeFromCart={this.handleRemoveFromCart}
                 recommendedProducts={recommendedProducts}
                 addToCart={this.handleAddToCart}
+                sendOrder={this.sendOrder}
               />
             </div>)}
           />

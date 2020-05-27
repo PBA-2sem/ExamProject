@@ -14,7 +14,8 @@ const redis = new Redis.Cluster([
         host: '52.91.150.136'
     }
 ], {
-    slotsRefreshInterval: 100,
+    // slotsRefreshInterval: 100,
+    slotsRefreshTimeout: 2000,
     redisOptions: {
         password: process.env.REDIS_PASSWORD
     }
@@ -27,9 +28,12 @@ function connect() {
     redis.on("reconnecting", function () {
         console.log("redis reconnect");
     });
+    redis.on("close", function () {
+        console.log("redis closed conn");
+    });
 
     return redis.on("connect", () => {
-        console.log("redis connected established..");
+        console.log("redis connection established..");
     });
 }
 connect();

@@ -10,5 +10,12 @@ class OrderFacade {
         return response;
     }
 
+    async sendOrder(data) {
+        let response = await fetch(URL + '/orders', makeOptions('POST', { order: data })).then(res => {
+            return res.json();
+        });
+        return response;
+    }
+
 }
 export default new OrderFacade();

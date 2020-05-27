@@ -7,7 +7,6 @@ const MongoClient = require('mongodb').MongoClient;
 const mongodb = MongoClient.connect(url);
 
 async function insertDocuments(data) {
-
     // const data = {      
     //         _id: "c9444ac7-9d19-11ea-9249-f201836c1c4e",
     //             orders: [
@@ -40,18 +39,17 @@ async function insertDocuments(data) {
     const collection = await dbc.collection("orders");
 
     const checkifexist = await collection.find({ _id: data._id }).count() > 0;
-
-    if (checkifexist == false) {
-
-        await collection.insertOne({ _id: data._id, ...data });
-    }
-    else {
-
-        await collection.updateOne(
-            { _id: data._id }, { $push: { orders: data.orders[0] } }
+    let updateRes;
+    if (!checkifexist) {
+        updateRes = await collection.insertOne({ _id: data._id, ...data });
+        return { success: 'created' }
+    } else {
+        updateRes = await collection.updateOne(
+            { _id: data._id },
+            { $push: { orders: data.orders[0] } }
         )
+        return { success: 'updated' }
     }
-
 };
 
 async function getAllOrders() {
