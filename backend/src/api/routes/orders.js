@@ -31,10 +31,13 @@ router.post('/', async function (req, res, next) {
     if (!order) return res.status(422).json({ error: 'Order missing' });
     try {
         const result = await insertSingleDocument(order);
+        console.log("orders l 34 - result: ")
+        console.log(result)
+
         return res.status(200).json(result);
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ error: err.message });
+        return res.status(501).json({ error: err.message });
     }
 });
 
