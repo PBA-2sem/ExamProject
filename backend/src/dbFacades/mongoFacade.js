@@ -1,4 +1,4 @@
-const url = 'mongodb://ec2-100-25-168-91.compute-1.amazonaws.com:27017';
+const url = 'mongodb://ec2-52-7-179-242.compute-1.amazonaws.com:27017,ec2-35-174-209-88.compute-1.amazonaws.com:27017';
 const MongoClient = require('mongodb').MongoClient;
 
 
@@ -38,14 +38,14 @@ async function insertDocuments(data) {
     const dbc = await dbConnect.db("biglers_biler");
     const collection = await dbc.collection("orders");
 
-    const checkifexist = await collection.find({ _id: data._id }).count() > 0;
+    const checkifexist = await collection.find({ userId: data.userId }).count() > 0;
     let updateRes;
     if (!checkifexist) {
-        updateRes = await collection.insertOne({ _id: data._id, ...data });
+        updateRes = await collection.insertOne({ ...data });
         return { success: 'created' }
     } else {
         updateRes = await collection.updateOne(
-            { _id: data._id },
+            { userId: data.userId },
             { $push: { orders: data.orders[0] } }
         )
         return { success: 'updated' }

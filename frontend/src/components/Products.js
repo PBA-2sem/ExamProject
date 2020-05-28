@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function StickyHeadTable({ products, addToCart, make, model, color, price }) {
+export default function StickyHeadTable({ products, addToCart, make, model, color, price, user }) {
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
@@ -57,9 +57,12 @@ export default function StickyHeadTable({ products, addToCart, make, model, colo
                                 <TableCell style={{ backgroundColor: row.color }} align="right">{row.color}</TableCell>
                                 <TableCell align="right">{row.price}</TableCell>
                                 <TableCell align="center">
-                                    <IconButton onClick={(e) => addToCart(e, row)} size="small" color="primary" aria-label="add to shopping cart">
-                                        <AddShoppingCartIcon fontSize="inherit" />
-                                    </IconButton>
+                                    {
+                                        user &&
+                                        <IconButton onClick={(e) => addToCart(e, row)} size="small" color="primary" aria-label="add to shopping cart">
+                                            <AddShoppingCartIcon fontSize="inherit" />
+                                        </IconButton>
+                                    }
                                 </TableCell>
                             </TableRow>
                         )}

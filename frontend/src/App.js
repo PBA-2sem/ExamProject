@@ -10,6 +10,7 @@ import Neo4jFacade from './facades/Neo4jFacade';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import Products from './components/Products';
 import ShoppingCart from './components/ShoppingCart';
+import { Link } from '@material-ui/core';
 
 class App extends React.Component {
   constructor(props) {
@@ -158,9 +159,8 @@ class App extends React.Component {
 
   sendOrder = async (e) => {
     e.preventDefault();
-
     await OrderFacade.sendOrder({
-      _id: this.state.user.id,
+      userId: this.state.user.id,
       orders: [
         {
           date: new Date(),
@@ -171,6 +171,12 @@ class App extends React.Component {
     OrderFacade.updateShoppingcart({ user: this.state.user, data: {} })
 
     this.setState({ shoppingCart: [], recommendedProducts: [] });
+  }
+
+  handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('user');
+    this.setState({ shoppingCart: [], recommendedProducts: [], user: null });
   }
 
   render() {
@@ -189,6 +195,11 @@ class App extends React.Component {
             }
             {user && <>
               <NavLink exact to="/shoppingcart" >Shoppingcart {cartSize > 0 && cartSize}</NavLink>
+              <Link
+                component="button"
+                variant="body2"
+                onClick={this.handleLogout}
+              >Logout</Link>
             </>
             }
 
@@ -200,6 +211,7 @@ class App extends React.Component {
               <Products
                 products={products}
                 addToCart={this.handleAddToCart}
+                user={user}
               />
             </div>)}
           />

@@ -20,6 +20,7 @@ const redis = new Redis.Cluster([
         password: process.env.REDIS_PASSWORD
     }
 });
+
 function connect() {
     redis.on("error", function () {
         console.log("redis connection error ");
