@@ -125,8 +125,6 @@ class App extends React.Component {
     // query mysql for 3 random products by color
     let recommendedProductsByColor = await ProductsFacade.get3ProdByColor({ color: top3ColorRecommendations[0] }); //just querying with 1/3 colors
 
-    console.log(recommendedProductsByColor);
-
     this.setState({ shoppingCart: shoppingCart, recommendedProducts: recommendedProductsByColor })
 
   }
@@ -159,18 +157,24 @@ class App extends React.Component {
 
   sendOrder = async (e) => {
     e.preventDefault();
-    await OrderFacade.sendOrder({
-      userId: this.state.user.id,
-      orders: [
-        {
-          date: new Date(),
-          products: [...this.state.shoppingCart]
-        }
-      ]
-    });
-    OrderFacade.updateShoppingcart({ user: this.state.user, data: {} })
+    try {
 
-    this.setState({ shoppingCart: [], recommendedProducts: [] });
+      await OrderFacade.sendOrder({
+        userId: this.state.user.id,
+        orders: [
+          {
+            date: new Date(),
+            products: [...this.state.shoppingCart]
+          }
+        ]
+      });
+      OrderFacade.updateShoppingcart({ user: this.state.user, data: {} })
+      this.setState({ shoppingCart: [], recommendedProducts: [] });
+    } catch (e) {
+      console.log(e);
+      alert('An error occured try again!')
+    }
+
   }
 
   handleLogout = (e) => {

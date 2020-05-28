@@ -60,7 +60,6 @@ async function setUserSessionFromLogin(user) {
 }
 
 async function setUserSessionWithPayload(id, payload) {
-    console.log('Redis stored :', payload)
     try {
         const value = await redis.set(id, JSON.stringify(payload), 'ex', 1800);
         return value;

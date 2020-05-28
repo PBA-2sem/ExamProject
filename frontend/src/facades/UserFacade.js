@@ -9,7 +9,6 @@ class UserFacade {
         const response = await fetch(URL + '/users/login', data).then(res => {
             return res.json();
         });
-        console.log(response)
         return response;
     }
 

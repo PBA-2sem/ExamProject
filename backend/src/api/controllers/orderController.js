@@ -11,7 +11,11 @@ async function getAllMongoOrders() {
 }
 
 async function insertSingleDocument(data) {
-    const result = await insertDocuments(data);
+    try {
+        const result = await insertDocuments(data);
+    } catch (err) {
+        throw Error(err);
+    }
     return result;
 }
 

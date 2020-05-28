@@ -21,7 +21,6 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/loginWithSession', async (req, res, next) => {
-    console.log(req.body)
     if (!req.body.userID) {
         return res.status(422).json({ error: 'UserId is missing!' });
     }

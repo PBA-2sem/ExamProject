@@ -29,9 +29,7 @@ async function login(username, password) {
 }
 
 async function loginWithSession(userID) {
-    console.log(userID)
     const inRedis = await getUserSession(userID);
-    console.log(inRedis)
     if (inRedis) {
         return { ...inRedis };
     } else
