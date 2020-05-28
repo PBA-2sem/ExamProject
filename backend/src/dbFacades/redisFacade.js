@@ -1,5 +1,5 @@
 const Redis = require("ioredis");
-// 34.207.62.135: 6001 34.207.62.135: 6002 3.85.54.175: 6001 3.85.54.175: 6002 52.91.150.136: 6001 52.91.150.136: 6002
+
 const redis = new Redis.Cluster([
     {
         port: 6001,
@@ -14,7 +14,7 @@ const redis = new Redis.Cluster([
         host: '52.91.150.136'
     }
 ], {
-    // slotsRefreshInterval: 100,
+    slotsRefreshInterval: 100,
     slotsRefreshTimeout: 2000,
     redisOptions: {
         password: process.env.REDIS_PASSWORD
@@ -37,7 +37,6 @@ function connect() {
         console.log("redis connection established..");
     });
 }
-connect();
 
 async function getUserSession(id) {
     try {
@@ -72,5 +71,6 @@ async function setUserSessionWithPayload(id, payload) {
 module.exports = {
     getUserSession,
     setUserSessionFromLogin,
-    setUserSessionWithPayload
+    setUserSessionWithPayload,
+    connect
 }

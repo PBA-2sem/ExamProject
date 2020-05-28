@@ -161,6 +161,7 @@ class App extends React.Component {
 
       await OrderFacade.sendOrder({
         userId: this.state.user.id,
+        userCountry: this.state.user.country,
         orders: [
           {
             date: new Date(),
