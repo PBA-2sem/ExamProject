@@ -28,10 +28,47 @@ const MongoClient = require('mongodb').MongoClient;
 
 //     ]
 // }
+findOrdersOfDate("2020-05-29");
+
+async function findOrdersOfDate(date)
+{
+    const db = MongoClient(url, { useUnifiedTopology: true });
+    const dbConnect = await db.connect();
+    const dbc = await dbConnect.db("biglers_biler");
+    const collection = await dbc.collection("orders");
+    const dailyTotal = await collection.mapReduce(
+        function(){
+            const userId = this.userId;
+            this.orders.forEach(function(order){ if(order.date.split("T")[0] === scopedate){
+                emit(userId, order)
+
+            }})
+
+        },
+        function(key, orders) {
+           
+            let totalprice = 0;
+            orders.forEach( order => {order.products.forEach( product => {totalprice += product.price*product.amount})}) 
+            return totalprice;
+        },
+        {
+            query : {_id:{$exists:true}},
+            out : "user_total_sale",
+            scope : {scopedate:date}
+        }
+     )
+ 
+    const finalsomething = await dbc.collection("user_total_sale").aggregate([ {$group: {
+        _id: null,
+        "Total": {$sum: "$value"}
+        }}
+    ]).next()
+     return finalsomething;
+    
+}
+
 
 async function insertDocuments(data) {
-
-
     const db = MongoClient(url, { useUnifiedTopology: true });
     const dbConnect = await db.connect();
 
@@ -57,7 +94,15 @@ async function insertDocuments(data) {
                 )
                 return { success: 'updated' }
             }
-        })
+        },
+        {
+              
+                readPreference: 'primary',
+                readConcern: { level: 'majority' },
+                writeConcern: { w: 'majority' },
+               
+        }
+        )
     } finally {
         await session.endSession();
         await db.close();
