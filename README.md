@@ -26,7 +26,7 @@ Navigate to the ``/backend/`` directory and enter the following to setup & start
 
 ```
 npm install
-port=3001 npm start
+PORT=3001 npm start
 ```
 
 #### Frontend
