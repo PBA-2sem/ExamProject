@@ -14,7 +14,7 @@ Password: test
 
 ### Configure .env file
 
-in the ``/backend/src/`` directory, make a copy of the ``.env.example`` file and rename it ``.env`` . Fill in the missing credentials (the credentials are located in the .zip file, handed in on Wiseflow).
+in the ``/backend/src/`` directory, make a copy of the ``.env.example`` file and rename it ``.env`` . Fill in the missing credentials (the credentials are located on the frontpage of the report, handed in on Wiseflow).
 
 ### Backend & Frontend 
 
