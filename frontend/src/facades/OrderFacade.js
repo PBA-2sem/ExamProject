@@ -7,6 +7,7 @@ class OrderFacade {
         let response = await fetch(URL + '/orders/shoppingcart', makeOptions('PUT', data)).then(res => {
             return res.json();
         });
+        if (response.error) throw ('DB ERROR', response.error);
         return response;
     }
 
@@ -14,6 +15,7 @@ class OrderFacade {
         let response = await fetch(URL + '/orders', makeOptions('POST', { order: data })).then(res => {
             return res.json();
         });
+        if (response.error) throw ('DB ERROR', response.error);
         return response;
     }
 

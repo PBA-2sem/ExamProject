@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('./src/dbFacades/redisFacade').connect();
 
 const api = require('./src/api');
 

@@ -11,7 +11,7 @@ async function findTop3Colors(age) {
     let ageGroup = _getAgeGroup(age)
 
     try {
-        const session = driver.session();
+        const session = await driver.session();
         const result = await session.run('MATCH (n)-[r:ADDED]->(m) WHERE n.name = $name RETURN m, count(DISTINCT r) AS num ORDER BY num DESC LIMIT 3;', { name: ageGroup })
         session.close()
         return result.records.map(record => record['_fields'][0]['properties']['name']);
@@ -32,7 +32,7 @@ async function registerAgeAndColor(age, color) {
 
 
     try {
-        const session = driver.session();
+        const session = await driver.session();
 
         // Merge agegroup
         await session.run("MERGE (:agegroup{name: $name})", { name: ageGroup })
@@ -44,7 +44,34 @@ async function registerAgeAndColor(age, color) {
         await session.run("MATCH (a:agegroup),(c:color) WHERE a.name = $name AND c.name = $color CREATE (a)-[r:ADDED]->(c) RETURN type(r);", { name: ageGroup, color: color })
 
         session.close()
-        return {ageGroup: ageGroup, color: color}
+        return { ageGroup: ageGroup, color: color }
+    } catch (err) {
+        console.log('ERROR: ', err)
+        throw Error('A DB error happened')
+    }
+
+}
+
+/**
+ * CREATE given country & color nodes (if not already exist, else MERGE), and CREATE relationship between them.
+ * @param {string} country, string 
+ * @param {string} color, string
+ */
+async function registerCountryAndColor(country, color) {
+
+    try {
+        const session = await driver.session();
+
+        //merge color
+        await session.run("MERGE (:country{name: $name})", { name: country })
+        //merge color
+        await session.run("MERGE (:color{name: $name})", { name: color })
+
+        //create relationship
+        await session.run("MATCH (a:country),(c:color) WHERE a.name = $name AND c.name = $color CREATE (a)-[r:BOUGHT]->(c) RETURN type(r);", { name: country, color: color })
+
+        session.close()
+        return { country, color }
     } catch (err) {
         console.log('ERROR: ', err)
         throw Error('A DB error happened')
@@ -78,7 +105,7 @@ function _getAgeGroup(age) {
  */
 async function _deleteAllNodesAndRelationships() {
     try {
-        const session = driver.session();
+        const session = await driver.session();
         await session.run('MATCH (n) DETACH DELETE n')
         session.close()
         return
@@ -116,6 +143,15 @@ function _getrandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
+function _getRandomCountry() {
+    const countries = [
+        'Denmark',
+        'Khazakstan',
+        'China',
+        'Sweden'
+    ]
+    return countries[Math.floor(Math.random() * countries.length)];
+}
 
 async function _fillNumberOfDummyRecommendationsAndRelationships(number) {
 
@@ -123,19 +159,29 @@ async function _fillNumberOfDummyRecommendationsAndRelationships(number) {
         await registerAgeAndColor(_getRandomNumber(), _getrandomColor());
     }
 
-    driver.close();
+}
+
+async function _fillColorRecommendationsByCountry(number) {
+    for (let i = 0; i < number; i++) {
+        await registerCountryAndColor(_getRandomCountry(), _getrandomColor());
+    }
 }
 
 // DUMMY DATA
 async function fillDummyData() {
     await _fillNumberOfDummyRecommendationsAndRelationships(500);
+    await _fillColorRecommendationsByCountry(500);
     driver.close();
 }
 
+// ********** USE THIS TO FILL DUMMYDATA IN NEO4J ********
+
 // fillDummyData();
 
+// ********** USE THIS TO FILL DUMMYDATA IN NEO4J ********
 
 module.exports = {
     findTop3Colors,
-    registerAgeAndColor
+    registerAgeAndColor,
+    registerCountryAndColor
 }

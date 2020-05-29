@@ -63,6 +63,8 @@ async function findOrdersOfDate(date)
         "Total": {$sum: "$value"}
         }}
     ]).next()
+
+    console.log(finalsomething);
      return finalsomething;
     
 }
@@ -81,14 +83,14 @@ async function insertDocuments(data) {
             const dbc = await dbConnect.db("biglers_biler");
             const collection = await dbc.collection("orders");
 
-            const checkifexist = await collection.find({ userId: data.userId }).count() > 0;
+            const storedUser = await collection.findOne({ userId: data.userId });
             let updateRes;
-            if (!checkifexist) {
+            if (!storedUser) {
                 updateRes = await collection.insertOne({ ...data }, { session });
                 return { success: 'created' }
             } else {
                 updateRes = await collection.updateOne(
-                    { userId: data.userId },
+                    { _id: storedUser._id },
                     { $push: { orders: data.orders[0] } },
                     { session }
                 )
@@ -103,6 +105,10 @@ async function insertDocuments(data) {
                
         }
         )
+        
+    } catch (e) {
+        console.log(e);
+        throw Error('An error occured storing shoppingcart');
     } finally {
         await session.endSession();
         await db.close();
