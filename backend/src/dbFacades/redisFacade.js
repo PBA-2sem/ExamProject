@@ -2,15 +2,15 @@ const Redis = require("ioredis");
 
 const redis = new Redis.Cluster([
     {
-        port: 6001,
+        port: process.env.REDIS_PORT,
         host: '34.207.62.135',
     },
     {
-        port: 6001,
+        port: process.env.REDIS_PORT,
         host: '3.85.54.175'
     },
     {
-        port: 6001,
+        port: process.env.REDIS_PORT,
         host: '52.91.150.136'
     }
 ], {
